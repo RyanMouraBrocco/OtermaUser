@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OtermaUser.Api.Controllers.Base;
+using OtermaUser.Api.Mappers;
+using OtermaUser.Api.Models;
 using OtermaUser.Application.Interfaces;
 using OtermaUser.Domain.Entities;
 using System;
@@ -28,16 +30,16 @@ namespace OtermaUser.Api.Controllers
 
         [HttpPost()]
         [AllowAnonymous]
-        public async Task<IActionResult> Post([FromBody] Self user)
+        public async Task<IActionResult> Post([FromBody] CreateUserModel user)
         {
-            return Ok(await _selfService.CreateAsync(user));
+            return Ok(await _selfService.CreateAsync(user.Map()));
         }
 
         [HttpPatch()]
         [Authorize()]
-        public async Task<IActionResult> Patch([FromBody] Self body)
+        public async Task<IActionResult> Patch([FromBody] UpdateUserModel body)
         {
-            return Ok(await _selfService.UpdateAsync(GetUserId(), body, RequestBody.Select(x => x.Key)));
+            return Ok(await _selfService.UpdateAsync(GetUserId(), body.Map(), RequestBody.Select(x => x.Key)));
         }
     }
 }

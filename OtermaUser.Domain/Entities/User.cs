@@ -10,8 +10,6 @@ namespace OtermaUser.Domain.Entities
 {
     public class User : BaseEntity
     {
-        [Required(ErrorMessage = "Name is required")]
-        [StringLength(200, ErrorMessage = "Max characters is 200")]
         public string Name { get; set; }
     }
 }

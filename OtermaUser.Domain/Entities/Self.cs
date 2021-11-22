@@ -10,10 +10,7 @@ namespace OtermaUser.Domain.Entities
 {
     public class Self : User
     {
-        [Required(ErrorMessage = "Email is required")]
-        [StringLength(200, ErrorMessage = "Max characters is 200")]
         public string Email { get; set; }
-        [StringLength(400, ErrorMessage = "Max characters is 400")]
         public string Password { get; set; }
         [SpecialProperyUpdate]
         public DateTime CreationDate { get; set; }

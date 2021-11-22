@@ -23,9 +23,9 @@ namespace OtermaUser.Api.Controllers.Base
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            base.OnActionExecuting(context);
             Request.EnableBuffering();
             SetRequestBodyAsync(Request.Body).Wait();
+            base.OnActionExecuting(context);
         }
 
         private async Task SetRequestBodyAsync(Stream body)

@@ -31,11 +31,24 @@ namespace OtermaUser.Infra.Sql.Mappers
             };
         }
 
+        public static Self MapToSelfAuthentication(this UserDto dto)
+        {
+            return new Self()
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                CreationDate = dto.CreationDate,
+                Email = dto.Email,
+                UpdateDate = dto.UpdateDate,
+                Password = dto.Password
+            };
+        }
+
         public static UserDto MapToDto(this Self entity)
         {
             return new UserDto()
             {
-                Id = (int)entity.Id,
+                Id = (int)(entity.Id ?? 0),
                 Name = entity.Name,
                 CreationDate = entity.CreationDate,
                 Email = entity.Email,

@@ -16,6 +16,5 @@ namespace OtermaUser.Infra.Sql.Dtos
         public string Password { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime UpdateDate { get; set; }
-        public IList<UserFriendDto> Friends { get; set; }
     }
 }

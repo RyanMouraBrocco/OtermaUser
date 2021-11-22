@@ -3,12 +3,20 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OtermaUser.Application.Interfaces;
+using OtermaUser.Application.Services;
+using OtermaUser.Domain.Authentication;
+using OtermaUser.Domain.Authentication.Settings;
+using OtermaUser.Infra.Sql.Context;
+using OtermaUser.Infra.Sql.Interfaces;
+using OtermaUser.Infra.Sql.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +43,18 @@ namespace OtermaUser.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "OtermaUser.Api", Version = "v1" });
             });
 
+            var connection = Configuration.GetConnectionString("OtermaUser");
+            services.AddDbContext<OtermaContext>(options => options.UseMySql(connection, new MySqlServerVersion("8.0")));
+            services.AddSingleton(Configuration.GetSection(typeof(AuthenticationSettings).Name).Get<AuthenticationSettings>());
+            services.Configure<AuthenticationSettings>(options => Configuration.GetSection(typeof(AuthenticationSettings).Name).Bind(options));
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<ISelfService, SelfService>();
+
+            services.AddScoped(typeof(IDatabaseRepository<>), typeof(DatabaseRepository<>));
+            services.AddScoped<IUserRepository, UserRepository>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -44,9 +64,9 @@ namespace OtermaUser.Api
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["Jwt:Issuer"],
-                        ValidAudience = Configuration["Jwt:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                        ValidIssuer = Configuration["AuthenticationSettings:Issuer"],
+                        ValidAudience = Configuration["AuthenticationSettings:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AuthenticationSettings:Key"]))
                     };
                 });
         }
@@ -65,6 +85,7 @@ namespace OtermaUser.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

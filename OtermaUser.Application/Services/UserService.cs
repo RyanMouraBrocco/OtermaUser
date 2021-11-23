@@ -21,7 +21,11 @@ namespace OtermaUser.Application.Services
 
         public async Task<User> GetByIdAsync(int userId)
         {
-            return (await _userRepository.GetOtherUserByIdAsync(userId)).MapToUser();
+            var user = (await _userRepository.GetOtherUserByIdAsync(userId))?.MapToUser();
+            if (user == null)
+                throw new UnauthorizedAccessException("You doesn't have permission to see this user");
+
+            return user;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace OtermaUser.Application.Services
         public async Task<AuthenticationToken> LoginAsync(AuthenticationRequest authenticationRequest)
         {
             var hashedPassord = Utils.Hash(authenticationRequest.Password);
-            var userCheck = (await _userRepository.GetByEmailAsync(authenticationRequest.Email)).MapToSelfAuthentication();
+            var userCheck = (await _userRepository.GetByEmailAsync(authenticationRequest.Email))?.MapToSelfAuthentication();
             if (userCheck == null || !userCheck.Password.Equals(hashedPassord))
             {
                 throw new UnauthorizedAccessException("Email or password not found");
@@ -49,7 +49,7 @@ namespace OtermaUser.Application.Services
                 new Claim("Id", user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email)
             };
-            var token = new JwtSecurityToken(Settings.Issuer, Settings.Issuer, claims, expires: DateTime.Now.AddMinutes(Settings.ExpirationTimeInSeconds), signingCredentials: credentials);
+            var token = new JwtSecurityToken(Settings.Issuer, Settings.Issuer, claims, expires: DateTime.Now.AddMinutes(Settings.ExpirationTimeInMinutes), signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

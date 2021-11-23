@@ -10,6 +10,6 @@ namespace OtermaUser.Domain.Authentication.Settings
     {
         public string Key { get; set; }
         public string Issuer { get; set; }
-        public int ExpirationTimeInSeconds { get; set; }
+        public int ExpirationTimeInMinutes { get; set; }
     }
 }

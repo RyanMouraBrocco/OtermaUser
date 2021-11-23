@@ -15,7 +15,7 @@ namespace OtermaUser.Domain.Entities
         [SpecialProperyUpdate]
         public DateTime CreationDate { get; set; }
         [SpecialProperyUpdate]
-        public DateTime UpdateDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
         public IList<UserFriend> Friends { get; set; }
     }
 }

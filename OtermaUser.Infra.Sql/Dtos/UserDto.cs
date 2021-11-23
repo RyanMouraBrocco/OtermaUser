@@ -15,6 +15,6 @@ namespace OtermaUser.Infra.Sql.Dtos
         public string Email { get; set; }
         public string Password { get; set; }
         public DateTime CreationDate { get; set; }
-        public DateTime UpdateDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
     }
 }

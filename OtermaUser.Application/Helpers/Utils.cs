@@ -29,7 +29,7 @@ namespace OtermaUser.Application.Helpers
         {
             var entityType = typeof(TEntity);
             var specialPropertyUpdateAttributeType = typeof(SpecialProperyUpdateAttribute);
-            return fieldsNames.Where(x => !(entityType.GetProperty(x)?.CustomAttributes.Any(x => x.AttributeType == specialPropertyUpdateAttributeType) ?? false)).ToList();
+            return fieldsNames.Where(x => !(entityType.GetProperty(x)?.CustomAttributes.Any(x => x.AttributeType == specialPropertyUpdateAttributeType) ?? false)).Select(x => x[0].ToString().ToUpper() + x.Substring(1).ToLower()).ToList();
         }
     }
 }
